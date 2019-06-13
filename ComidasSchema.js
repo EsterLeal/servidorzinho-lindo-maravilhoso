@@ -5,7 +5,8 @@ const ComidasSchema = new Schema ({
     _id : {type: mongoose.Schema.Types.ObjectId, auto: true},
     nome : {type: String, required: true},
     // opcional
-    descricao : {type: String} 
+    descricao : {type: String}, 
+    imagem: {type: String}
 }) 
 const comidasModel = mongoose.model('comidas', ComidasSchema);
 module.exports = comidasModel;

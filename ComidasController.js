@@ -10,7 +10,7 @@ const getAll = async () => {
   })
 }
 
-const getById = async (id) => {
+const getById = (id) => {
   return comidasModel.findById(
     id,
     (error, comida) => {
@@ -19,41 +19,28 @@ const getById = async (id) => {
   )
 }
 
-const add = (comida) => {
-  const novaComida = new comidasModel({
-    nome : comida.nome,
-    descricao: comida.descricao
-  })
+const add = async (comida) => {
+  const novaComida = new comidasModel(comida)
+    return novaComida.save()
+  }
 
-  novaComida.save()
+const remove = async (id) => {
+  return comidasModel.findByIdAndDelete(id)
 }
-
-const remove = (id) => {
-  comidas.pratosFavoritos = getAll().filter((comida) => {
-    return comida.id !== id
-  })
-}
+  
 
 // update = nunca mexer no ID
 
 const update = (id, comida) => {
-  let comidaCadastrada = getAll().find(comida =>{
-    return comida.id === id
-  })
-
-  if(comidaCadastrada === undefined){ // nao encontrou a comida
-    return false
-  }
-  else {
-    if(comida.nome !== undefined) {
-      comidaCadastrada.nome = comida.nome
+  return comidasModel.findByIdAndUpdate(
+    id,
+    { $set: comida },
+    { new: true }, // RETORNAR A COMIDA JA ATUALIZADA NO CALLBACK
+    function (error, comida) { // é o nosso callback
+      return comida
     }
-    if(comida.descricao !== undefined) {
-      comidaCadastrada.descricao = comida.descricao
-    }
+  )
 
-    return true
-  }
 }
 
 // const comidaAtualizada = {

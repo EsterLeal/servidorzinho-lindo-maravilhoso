@@ -1,10 +1,11 @@
 const mongoose = require('mongoose')
-const MONGO_URL = 'mongodb://localhosto:27017/reprograma'
+const MONGO_URL = 'mongodb://localhost:27017/reprograma'
 
 function connect() {
   mongoose.connect(MONGO_URL,
     {useNewUrlParser: true},
-    function(error){
+    error => {
+  
       if (error) {
         console.log("Deu ERRO", error)
       } else {
