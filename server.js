@@ -34,19 +34,52 @@ servidor.get('/comidas/:id', (request, response) => {
 
 
 servidor.post('/comidas', (request, response) => {
-  const novaComida = controller.add(request.body)
-  response.status(200).send(novaComida)
+  controller.add(request.body)
+    .then(comida => {
+      const _id = comida._id
+      response.send(_id)
+    })
+    .catch(error => {
+      if(error.name === "ValidationError"){
+        response.sendStatus(400) // bad request
+      } else {
+        response.sendStatus(500)
+      }
+    })
 })
 
-servidor.patch('/comidas/:id', async (request, response) => {
+servidor.patch('/comidas/:id', (request, response) => {
   const id = request.params.id
   controller.update(id, request.body)
-  .then(response.sendStatus(204))
+    .then(comida => {
+      if(!comida) { response.sendStatus(404) } // nao encontrei a comida
+      else { response.send(comida) } // o status default 200
+    })
+    .catch(error => {
+      if(error.name === "MongoError" || error.name === "CastError"){
+        response.sendStatus(400) // bad request
+      } else {
+        response.sendStatus(500)
+      }
+    })
 })
 
-servidor.delete('/comidas/:id', async (request, response) => {
+servidor.delete('/comidas/:id', (request, response) => {
   controller.remove(request.params.id)
-    .then(comida => response.sendStatus(204))
+    .then(comida => {
+      if (comida === null || comida === undefined){ //if (!comida)
+        response.sendStatus(400) //NOT FOUND
+      } else {
+        response.sendStatus(204)
+      } 
+    })
+    .catch(error => {
+      if(error.name === "CastError"){
+        response.sendStatus(400) //bad request
+      } else {
+        response.sendStatus(500)
+      } 
+    })
 })
 
 servidor.listen(3000)

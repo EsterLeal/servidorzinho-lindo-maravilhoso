@@ -1,30 +1,35 @@
 const { connect } = require('./ComidasRepository')
 const comidasModel = require('./ComidasSchema')
 
-// Para conectar o Mongo DB
-connect()
+connect() //Para conectar o Mongo DB
 
-const getAll = async () => {
+const getAll = () => {
   return comidasModel.find((error, comidas) =>{
     return comidas
   })
 }
 
 const getById = (id) => {
-  return comidasModel.findById(
-    id,
-    (error, comida) => {
-      return comida
-    }
-  )
+  return comidasModel.findById(id) 
 }
 
-const add = async (comida) => {
+// const getById = (id) => {
+//   return comidasModel.findById(
+//     id,
+//     (error, comida) => {
+//       return comida
+//     }
+//   )
+// }
+
+const add = (comida) => {
+  // condição (if) para que o post dê erro (400) em algum campo específico
+  // EX: if nome === ester (400)
   const novaComida = new comidasModel(comida)
     return novaComida.save()
   }
 
-const remove = async (id) => {
+const remove = (id) => {
   return comidasModel.findByIdAndDelete(id)
 }
   
@@ -36,9 +41,9 @@ const update = (id, comida) => {
     id,
     { $set: comida },
     { new: true }, // RETORNAR A COMIDA JA ATUALIZADA NO CALLBACK
-    function (error, comida) { // é o nosso callback
-      return comida
-    }
+    // function (error, comida) { // é o nosso callback
+    //   return comida
+    // }
   )
 
 }
